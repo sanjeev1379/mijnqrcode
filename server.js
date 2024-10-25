@@ -34,13 +34,15 @@ app.post('/api/share', upload.single('qrCodeImage'), (req, res) => {
 
     const qrCodeUrl = req.body.qrCodeUrl;
     const qrCodeImage = `https://mijnqrcode.onrender.com/qrcodes/${req.file.filename}`;  // Save the path for the image
+    const uniqueId = req.body.uniqueId;
 
     // Store the URL and image path in the session
     req.session.qrCodeUrl = qrCodeUrl;
     req.session.qrCodeImage = qrCodeImage;
+    req.session.qrCodeShareUrl = `https://mijnqrcode.onrender.com/share/${uniqueId}`;
 
     // Redirect to /share
-    res.redirect('/share');
+    res.redirect(`/share/${uniqueId}`);
 });
 
 // Serve static files (React build files)
@@ -50,12 +52,11 @@ app.use('/qrcodes', express.static(path.resolve(__dirname, 'qrcodes')));
 
 
 // Handle all routes
-app.get('/share', (req, res) => {
-    console.log("req.session",req.session)
+app.get('/share/:uniqueId', (req, res) => {
     const title = 'Share - get business up with mijnQRCode';
     const description = 'Generate a custom QR code instantly to share any link and download your unique QR code to share online.';
-    const url = req.session.qrCodeUrl || 'https://mijnqrcode.onrender.com/';
-    const imageUrl = req.session.qrCodeImage || 'https://mijnqrcode.onrender.com/assets/logo.png';
+    const url = req.session.qrCodeShareUrl || 'https://mijnqrcode.onrender.com/';
+    const imageUrl = req.session.qrCodeImage || 'https://mijnqrcode.onrender.com/assets/share.png';
 
     // Read index.html from the build folder
     const indexFile = path.resolve('./build/index.html');

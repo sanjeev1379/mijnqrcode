@@ -52,14 +52,16 @@ const QRCodeGenerator = () => {
             formData.append('qrCodeUrl', qrCodeUrl);
             formData.append('qrCodeImage', file);
 
+            const uniqueId = encodeURIComponent(qrCodeUrl); 
+            formData.append('uniqueId', uniqueId);
+
             fetch('/api/share', {
                 method: 'POST',
                 body: formData,
             }).then(() => {
                 console.log("Success");
-                // Redirect to /share
-                const uniqueId = encodeURIComponent(qrCodeUrl);  // you could generate a better unique ID
-                navigate('/share', { state: { uniqueId: uniqueId } });
+                // Redirect to /share/${uniqueId}
+                navigate(`/share/${uniqueId}`);
                 window.location.reload();
             }).catch((error) => {
                 console.error("Error:", error);

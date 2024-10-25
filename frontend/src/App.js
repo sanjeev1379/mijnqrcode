@@ -13,7 +13,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<QRCodeGenerator />} />
-          <Route path="/share" element={<QRCodeDisplay />} />
+          <Route path="/share/:uniqueId" element={<QRCodeDisplay />} />
         </Routes>
       </Router>
     </div>
