@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'react-qr-code';
-
+import { encodeUrl } from '../utils';
 
 const QRCodeGenerator = () => {
     const [qrCodeUrl, setQRCodeUrl] = useState('');
@@ -24,7 +24,6 @@ const QRCodeGenerator = () => {
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
                 const pngFile = canvas.toDataURL('image/png');
-                console.log('pngFile onload',pngFile)
                 setQRCodeImage(pngFile);
                 
             };
@@ -52,7 +51,7 @@ const QRCodeGenerator = () => {
             formData.append('qrCodeUrl', qrCodeUrl);
             formData.append('qrCodeImage', file);
 
-            const uniqueId = encodeURIComponent(qrCodeUrl); 
+            const uniqueId = encodeUrl(qrCodeUrl);
             formData.append('uniqueId', uniqueId);
 
             fetch('/api/share', {

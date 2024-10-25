@@ -3,10 +3,11 @@ import QRCode from 'react-qr-code';
 import { useParams } from 'react-router-dom';
 import { LinkedinIcon, FacebookIcon, TwitterIcon } from 'react-share';
 import { Helmet } from 'react-helmet';
+import { decodeUrl } from '../utils';
 
 const QRCodeDisplay = () => {
     const { uniqueId } = useParams();
-    const decodedUrl = decodeURIComponent(uniqueId);
+    const decodedUrl = decodeUrl(uniqueId);
     const svgRef = useRef(null);
 
     const handleShare = async () => {

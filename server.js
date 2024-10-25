@@ -55,8 +55,8 @@ app.use('/qrcodes', express.static(path.resolve(__dirname, 'qrcodes')));
 app.get('/share/:uniqueId', (req, res) => {
     const title = 'Share - get business up with mijnQRCode';
     const description = 'Generate a custom QR code instantly to share any link and download your unique QR code to share online.';
-    const url = req.session.qrCodeShareUrl || 'https://mijnqrcode.onrender.com/';
-    const imageUrl = req.session.qrCodeImage || 'https://mijnqrcode.onrender.com/assets/share.png';
+    const url = req.session.qrCodeShareUrl ? req.session.qrCodeShareUrl : 'https://mijnqrcode.onrender.com/';
+    const imageUrl = req.session.qrCodeImage ? req.session.qrCodeImage : 'https://mijnqrcode.onrender.com/assets/share.png';
 
     // Read index.html from the build folder
     const indexFile = path.resolve('./build/index.html');
