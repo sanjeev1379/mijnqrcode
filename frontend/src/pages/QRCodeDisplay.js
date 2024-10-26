@@ -4,61 +4,85 @@ import { useParams } from 'react-router-dom';
 import { LinkedinIcon, FacebookIcon, TwitterIcon } from 'react-share';
 import { Helmet } from 'react-helmet';
 import { decodeUrl } from '../utils';
+import WebView from './WebView';
+
+const QRCodePopup = ({ decodedUrl, handleShare }) => {
+    return (
+        <div className="popup">
+            <h1>Share QR Code Generator</h1>
+            <div className="qrCodeContainer" onClick={() => window.open(decodedUrl, '_blank')}>
+                <QRCode value={decodedUrl} size={256} />
+            </div>
+            <br />
+
+            {/* Convert the QRCode to a downloadable image */}
+            <div>
+                <a href={`https://www.linkedin.com/sharing/share-offsite/?url=https://mijnqrcode.onrender.com/share/${decodedUrl}&title=Share - get business up with mijnQRCode&summary=Generate a custom QR code instantly to share any link and download your unique QR code to share online.?utm_source=linkedin&utm_medium=social&utm_campaign=linkedin_social_vac_share`} target="_blank" style={{ marginRight: '8px' }}>
+                    <LinkedinIcon size={32} round={true} />
+                </a>
+                <a href={`https://www.facebook.com/sharer/sharer.php?u=https://mijnqrcode.onrender.com/share/${decodedUrl}?utm_source=facebook&utm_medium=social&utm_campaign=facebook_social_vac_share`} target="_blank" style={{ marginRight: '8px' }}>
+                    <FacebookIcon size={32} round={true} />
+                </a>
+                <a href={`https://twitter.com/intent/tweet?url=https://mijnqrcode.onrender.com/share/${decodedUrl}?utm_source=twitter&utm_medium=social&utm_campaign=twitter_social_vac_share&utm_term=business&text=Share - get business up with mijnQRCode`} target="_blank" style={{ marginRight: '8px' }}>
+                    <TwitterIcon size={32} round={true} />
+                </a>
+            </div>
+
+            <p>
+                Share this QR code or click the link:
+                <a href={decodedUrl} target="_blank" rel="noopener noreferrer">
+                    {decodedUrl}
+                </a>
+            </p>
+            <br /><br />
+            <button className="btn green" onClick={handleShare}>Share QR Code</button>
+        </div>
+    );
+}
 
 const QRCodeDisplay = () => {
     const { uniqueId } = useParams();
     const decodedUrl = decodeUrl(uniqueId);
-    const svgRef = useRef(null);
+    const [isPopupOpen, setPopupOpen] = useState(false);
 
     const handleShare = async () => {
         if (navigator.share) {
-          try {
-            await navigator.share({
-              title: 'Share - get business up with mijnQRCode',
-              text: 'Generate a custom QR code instantly to share any link and download your unique QR code to share online.',
-              url: decodedUrl,
-            });
-            console.log("Image shared successfully");
-          } catch (error) {
-            console.error("Error sharing:", error);
-          }
+            try {
+                await navigator.share({
+                    title: 'Share - get business up with mijnQRCode',
+                    text: 'Generate a custom QR code instantly to share any link and download your unique QR code to share online.',
+                    url: decodedUrl,
+                });
+                console.log("Image shared successfully");
+            } catch (error) {
+                console.error("Error sharing:", error);
+            }
         } else {
-          console.error("Web Share API is not supported in your browser.");
+            console.error("Web Share API is not supported in your browser.");
         }
     };
-    
+
 
     return (
-        <div>
-            <h1>Share QR Code Generator</h1>
-            <>
-                <div ref={svgRef} onClick={() => window.open(decodedUrl, '_blank')}>
-                    <QRCode value={decodedUrl} size={256} />
+        <div className="display-layout">
+            <WebView url={decodedUrl} />
+            <button
+                className="bottom-button"
+                onClick={() => setPopupOpen(true)}
+            >
+                <QRCode value={decodedUrl} size={128} />
+            </button>
+            {/* Popup */}
+            {isPopupOpen && (
+                <div className="overlay">
+                    <div className="popup-container">
+                        <QRCodePopup decodedUrl={decodedUrl} handleShare={handleShare} />
+                        <button className="close-popup" onClick={() => setPopupOpen(false)}>
+                            Close
+                        </button>
+                    </div>
                 </div>
-                <br />
-
-                {/* Convert the QRCode to a downloadable image */}
-                <div>
-                    <a href={`https://www.linkedin.com/sharing/share-offsite/?url=https://mijnqrcode.onrender.com/share/${decodedUrl}&title=Share - get business up with mijnQRCode&summary=Generate a custom QR code instantly to share any link and download your unique QR code to share online.?utm_source=linkedin&utm_medium=social&utm_campaign=linkedin_social_vac_share`} target="_blank" style={{ marginRight: '8px' }}>
-                        <LinkedinIcon size={32} round={true} />
-                    </a>
-                    <a href={`https://www.facebook.com/sharer/sharer.php?u=https://mijnqrcode.onrender.com/share/${decodedUrl}?utm_source=facebook&utm_medium=social&utm_campaign=facebook_social_vac_share`} target="_blank" style={{ marginRight: '8px' }}>
-                        <FacebookIcon size={32} round={true} />
-                    </a>
-                    <a href={`https://twitter.com/intent/tweet?url=https://mijnqrcode.onrender.com/share/${decodedUrl}?utm_source=twitter&utm_medium=social&utm_campaign=twitter_social_vac_share&utm_term=business&text=Share - get business up with mijnQRCode`} target="_blank" style={{ marginRight: '8px' }}>
-                        <TwitterIcon size={32} round={true} />
-                    </a>
-                </div>
-
-                <p>
-                    Share this QR code or click the link:
-                    <a href={decodedUrl} target="_blank" rel="noopener noreferrer">
-                        {decodedUrl}
-                    </a>
-                </p>
-                <br /><br />
-                <button className="btn green" onClick={handleShare}>Share QR Code</button>
-            </>
+            )}
         </div>
     );
 };
