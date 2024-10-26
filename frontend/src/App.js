@@ -12,7 +12,7 @@ function App() {
       </header>
       <Router>
         <Routes>
-          <Route path="/" element={<QRCodeGenerator />} />
+          <Route path="/" exact element={<QRCodeGenerator />} />
           <Route path="/share/:uniqueId" element={<QRCodeDisplay />} />
         </Routes>
       </Router>

@@ -1,6 +1,4 @@
 
-const SECRET_KEY = 'mijnQRCode_2025_ZACK';
-
 // Function to encode URL
 export const encodeUrl = (url) => {
     const base64Url = btoa(url); // Convert URL to Base64

@@ -52,6 +52,31 @@ app.use('/qrcodes', express.static(path.resolve(__dirname, 'qrcodes')));
 
 
 // Handle all routes
+app.get('/', (req, res) => {
+    const url = 'https://mijnqrcode.onrender.com/';
+    const imageUrl = 'https://mijnqrcode.onrender.com/assets/share.png';
+
+    // Read index.html from the build folder
+    const indexFile = path.resolve('./build/index.html');
+    fs.readFile(indexFile, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading index.html:', err);
+            return res.status(500).send('Server error');
+        }
+
+        // Replace the title and meta tags in the HTML
+        const finalHtml = data
+            .replace(/<meta property="og:url" content="[^"]*"\/?>/, `<meta property="og:url" content="${url}"/>`)
+            .replace(/<meta property="og:image" content="[^"]*"\/?>/, `<meta property="og:image" content="${imageUrl}"/>`)
+            .replace(/<meta name="twitter:image" content="[^"]*"\/?>/, `<meta name="twitter:image" content="${imageUrl}"/>`)
+            .replace(/<link rel="canonical" href="[^"]*"\/?>/, `<link rel="canonical" href="${url}"/>`);
+
+        // Send the updated HTML to the browser
+        res.send(finalHtml);
+    });
+});
+
+
 app.get('/share/:uniqueId', (req, res) => {
     const title = 'Share - get business up with mijnQRCode';
     const description = 'Generate a custom QR code instantly to share any link and download your unique QR code to share online.';
