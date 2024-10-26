@@ -3,6 +3,7 @@ import './styles/App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import QRCodeGenerator from './pages/QRCodeGenerator';
 import QRCodeDisplay from './pages/QRCodeDisplay';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" exact element={<QRCodeGenerator />} />
           <Route path="/share/:uniqueId" element={<QRCodeDisplay />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
     </div>
